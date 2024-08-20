@@ -1,5 +1,8 @@
 <script setup>
     import { RouterLink, RouterView } from 'vue-router';
+    import { useAuthStore } from '@/stores/authStore';
+
+    const authStore = useAuthStore();
 </script>
 
 <template>
@@ -13,8 +16,8 @@
             <RouterLink to="/">USERS</RouterLink>
         </div>
         <div>
-            <RouterLink to="/login">LOGIN</RouterLink>
-            <!-- <RouterLink to="/logout">LOGOUT</RouterLink> -->
+            <RouterLink v-if="!authStore.isAuthenticated()" to="/login">LOGIN</RouterLink>
+            <a v-if="authStore.isAuthenticated()" @click.prevent="authStore.logout">LOGOUT</a>
         </div>
     </nav>
 </template>

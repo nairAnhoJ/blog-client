@@ -19,8 +19,16 @@
 
 <script>
     import axios from 'axios';
+    import { useAuthStore } from '@/stores/authStore';
 
     export default {
+        setup(){
+            const authStore = useAuthStore();
+
+            return {
+                authStore,
+            };
+        },
         data() {
             return {
                 email: '',
@@ -36,7 +44,7 @@
                         password: this.password,
                     });
 
-                    localStorage.setItem('token', response.data.token);
+                    this.authStore.setToken(response.data.token);
                     this.$router.push({ name: 'home' });
                 } catch (error) {
                     if (error.response) {
