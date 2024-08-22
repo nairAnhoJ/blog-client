@@ -3,6 +3,7 @@ import { useAuthStore } from "@/stores/authStore";
 
 import LoginPage from "@/views/LoginPage.vue";
 import HomePage from "@/views/HomePage.vue";
+import UsersPage from "@/views/UsersPage.vue";
 
 const router = createRouter({
     history: createWebHistory('/'),
@@ -21,7 +22,7 @@ const router = createRouter({
         {
             path: '/users',
             name: 'users',
-            component: HomePage,
+            component: UsersPage,
             meta: { requiresAuth: true },
         },
     ]

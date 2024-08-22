@@ -1,7 +1,11 @@
 import axios from "axios";
 import { useAuthStore } from "@/stores/authStore";
 
-axios.interceptors.request.use(config => {
+const axiosInstance = axios.create({
+    baseURL: 'http://localhost:8000/api/v1'
+});
+
+axiosInstance.interceptors.request.use(config => {
     const authStore = useAuthStore();
     const token = authStore.token;
     if (token) {
@@ -12,4 +16,4 @@ axios.interceptors.request.use(config => {
     return Promise.reject(error);
 });
 
-export default axios;
+export default axiosInstance;

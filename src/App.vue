@@ -3,11 +3,11 @@
 </script>
 
 <template>
-  <div class="">
+  <div class="fixed w-full z-[99]">
     <NavBar></NavBar>
   </div>
 
-  <main class="w-screen h-[calc(100%-64px)]">
+  <main class="w-screen overflow-x-hidden pt-16">
     <RouterView></RouterView>
   </main>
 </template>

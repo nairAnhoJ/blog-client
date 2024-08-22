@@ -1,5 +1,5 @@
 <template>
-    <div class="flex w-full h-full items-center justify-center">
+    <div class="flex w-full h-[calc(100vh-)] items-center justify-center">
         <form class="w-96 mb-32" @submit.prevent="login">
             <h1 class="text-center mb-5 text-white font-bold text-3xl">Welcome Back!</h1>
             <div class="">
@@ -51,10 +51,10 @@
                         if (error.response.status === 422) {
                         this.errors = error.response.data.errors || {};
                         } else {
-                        this.error = 'Invalid login credentials.';
+                        this.errors = 'Invalid login credentials.';
                         }
                     } else {
-                        this.error = 'An unexpected error occurred. Please try again later.';
+                        this.errors = 'An unexpected error occurred. Please try again later.';
                     }
                 }
             }
