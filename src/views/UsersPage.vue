@@ -2,7 +2,7 @@
     <div class="overflow-x-hidden">
         <div class="text-white p-6 min-h-[calc(100vh-64px)]">
             <div class="w-full flex items-center justify-between">
-                <UserAdd></UserAdd>
+                <UserAdd @add-row="addRow"></UserAdd>
             </div>
             <div class="mt-6 w-full">
                 <table class="w-full">
@@ -15,7 +15,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <UserTable v-for="user in collection" :key="user.id" :user="user"></UserTable>
+                        <UserTable v-for="user in collection" :key="user.id" :user="user" @update-row="updateRow"></UserTable>
                     </tbody>
                 </table>
                 <Loading v-if="!isLoaded"></Loading>
@@ -47,35 +47,37 @@
     // Variables
 
     onMounted(async () => {
-        try {
-            const response = await usersIndex();
-            collection.value = response.data.data
-            pagination.value = {
-                links: response.data.links,
-                meta: response.data.meta
-            };
-        } catch (error) {
-            console.error("Error fetching collection:", error);
-        }finally{
-            isLoaded.value = true;
-        }
+        await fetchCollection();
     });
 
     const fetchCollection = async (url) => {
         isLoaded.value = false;
         collection.value = [];
-        if (!url) return;
         try {
-            let response = await axios.get(url);
-            collection.value = response.data.data; // Extracting transaction data
+            const response = url ? await axios.get(url) : await usersIndex();
+            collection.value = response.data.data;
             pagination.value = {
                 links: response.data.links,
-                meta: response.data.meta
+                meta: response.data.meta,
             };
         } catch (error) {
-            console.error('Error loading page:', error);
-        }finally{
+            console.error("Error fetching collection:", error);
+        } finally {
             isLoaded.value = true;
         }
     };
+
+    function updateRow(updatedUser) {
+        const index = collection.value.findIndex(user => user.id == updatedUser.id);
+        console.log(index);
+        
+        if (index != -1) {
+            collection.value[index] = updatedUser;
+        }
+    }
+
+    function addRow(newUser) {
+        console.log(newUser);
+        collection.value.push(newUser);
+    }
 </script>

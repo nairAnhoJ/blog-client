@@ -1,21 +1,22 @@
 <template>
-    <button @click="isAddModalVisible = !isAddModalVisible" class="text-xl font-bold bg-blue-600 px-3 py-2 rounded-lg hover:bg-blue-700">
-        ADD USER
+    <button @click="showEditModal(editID)" class="group relative inline-block flex hover:underline p-3 bg-gray-500 text-gray-800 rounded-xl hover:bg-gray-400 duration-300 z-10">
+        <IconPencil class="w-5 h-5"></IconPencil>
+        <span class="absolute hidden group-hover:flex right-1/2 -bottom-[2px] translate-y-full translate-x-1/2 px-2 py-1 bg-gray-700 rounded-lg text-center text-white text-sm after:content-[''] after:absolute after:left-1/2 after:bottom-[100%] after:-translate-x-1/2 after:border-8 after:border-x-transparent after:border-t-transparent after:border-b-gray-700 z-20">Edit</span>
     </button>
 
-    <div v-if="isAddModalVisible" class="h-screen w-screen bg-neutral-900 bg-opacity-60 fixed top-0 left-0 z-[100] flex items-center justify-center">
-        <form @submit.prevent="store" class="w-[800px] bg-neutral-600 rounded-lg">
+    <div v-if="isEditModalVisible" class="h-screen w-screen bg-neutral-900 bg-opacity-60 fixed top-0 left-0 z-[100] flex items-center justify-center">
+        <form @submit.prevent="update" class="w-[800px] bg-neutral-600 rounded-lg">
             <div class="p-5 flex items-center justify-between border-b">
                 <div class="font-bold text-2xl">
-                    ADD USER
+                    EDIT USER
                 </div>
                 <div>
                     <button type="button" class="w-8 flex items-center hover:scale-105">
-                        <IconClose @click="isAddModalVisible = !isAddModalVisible" class="w-full h-full"></IconClose>
+                        <IconClose @click="isEditModalVisible = !isEditModalVisible" class="w-full h-full"></IconClose>
                     </button>
                 </div>
             </div>
-            <div class="p-5 border-b">
+            <div class="p-5 border-b text-left">
                 <div class="mb-6">
                     <label for="name" class="block mb-1 text-sm font-medium text-gray-900 dark:text-white">Name</label>
                     <input type="text" id="name" v-model="user.name" class="bg-neutral-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" autocomplete="off">
@@ -38,26 +39,47 @@
 
 <script setup>
     import { ref } from 'vue';
-    import { createUser } from '@/http/user-api';
+    import { editUser, updateUser } from '@/http/user-api';
     import IconClose from '@/components/icons/IconClose.vue';
-
-    const isAddModalVisible = ref(false);
-    const errors = ref({});
-    const loadingElement = document.getElementById('loading');
-    const emit = defineEmits(['add-row']);
+    import IconPencil from '@/components/icons/IconPencil.vue';
 
     const user = ref({
         name: '',
-        email: '',
-        password: 'password'
+        email: ''
     });
 
-    async function store() {
+    const props = defineProps({
+        editID: {
+            type: Number,
+            required: true,
+        }
+    });
+
+    const isEditModalVisible = ref(false);
+    const errors = ref({});
+    const loadingElement = document.getElementById('loading');
+    const emit = defineEmits(['update-row']);
+
+    async function showEditModal(id) {
         try {
             loadingElement.classList.remove('hidden');
-            const response = await createUser(user.value);
-            isAddModalVisible.value = false;
-            emit('add-row', response.data.data);
+            errors.value = {};
+            const response = await editUser(id);
+            user.value = response.data.data
+        }catch (error) {
+            // error = 'An unexpected error occurred.';
+        }finally{
+            isEditModalVisible.value = true;
+            loadingElement.classList.add('hidden');
+        }
+    }
+
+    async function update() {
+        try {
+            loadingElement.classList.remove('hidden');
+            const response = await updateUser(props.editID, user.value);
+            isEditModalVisible.value = false;
+            emit('update-row', response.data.data);
         } catch (error) {
             if (error.response) {
                 if (error.response.status === 422) {
@@ -71,6 +93,13 @@
         }finally{
             loadingElement.classList.add('hidden');
         }
-    };
+    }
+
+    // return {
+    //     user,
+    //     isEditModalVisible,
+    //     store,
+    //     errors
+    // };
 </script>
 

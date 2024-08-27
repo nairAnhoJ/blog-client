@@ -1,10 +1,6 @@
 <template>
-    <div class="flex items-center justify-center">
+    <div class="flex items-center justify-end mt-5">
         <div v-if="pagination" class="">
-            <div class="text-sm text-center mb-1">
-                <span>Page {{ pagination.meta.current_page }} of {{ pagination.meta.last_page }}</span>
-            </div>
-
             <ul class="flex flex-row items-center -space-x-px h-8 text-sm">
                 <li>
                     <button @click="$emit('load-page', pagination.links.prev)" :disabled="!pagination.links.prev" class="disabled:opacity-70 disabled:pointer-events-none flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700">
