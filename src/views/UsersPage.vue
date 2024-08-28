@@ -15,7 +15,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <UserTable v-for="user in collection" :key="user.id" :user="user" @update-row="updateRow"></UserTable>
+                        <UserTable v-for="user in collection" :key="user.id" :user="user" @update-row="updateRow" @delete-row="deleteRow"></UserTable>
                     </tbody>
                 </table>
                 <Loading v-if="!isLoaded"></Loading>
@@ -38,12 +38,16 @@
         import UserAdd from '@/components/modules/users/UserAdd.vue';
         import PaginationComponent from '@/components/PaginationComponent.vue';
         import axios from '@/axios';
+        import { useAuthStore } from '@/stores/authStore';
+
     // Imports
 
     // Variables
         const collection = ref([]);
         const isLoaded = ref(false);
         const pagination = ref({ links: {}, meta: {} });
+        const errors = ref({});
+        const authStore = useAuthStore();
     // Variables
 
     onMounted(async () => {
@@ -61,7 +65,17 @@
                 meta: response.data.meta,
             };
         } catch (error) {
-            console.error("Error fetching collection:", error);
+            if (error.response) {
+                if (error.response.status === 422) {
+                    errors.value = error.response.data.errors || {};
+                } else if(error.response.status === 401) {
+                    authStore.logout();
+                } else {
+                    errors.value = 'An unexpected error occurred. Please try again later.';
+                }
+            } else {
+                errors.value = 'An unexpected error occurred. Please try again later.';
+            }
         } finally {
             isLoaded.value = true;
         }
@@ -69,7 +83,6 @@
 
     function updateRow(updatedUser) {
         const index = collection.value.findIndex(user => user.id == updatedUser.id);
-        console.log(index);
         
         if (index != -1) {
             collection.value[index] = updatedUser;
@@ -77,7 +90,13 @@
     }
 
     function addRow(newUser) {
-        console.log(newUser);
         collection.value.push(newUser);
+    }
+
+    function deleteRow(deleteUser) {
+        const index = collection.value.findIndex((user) => user.id === deleteUser);
+        if (index !== -1) {
+            collection.value.splice(index, 1);
+        }
     }
 </script>

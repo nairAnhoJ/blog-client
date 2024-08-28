@@ -5,6 +5,8 @@ import router from "@/Router";
 
 export const useAuthStore = defineStore('auth', () => {
     const token = ref(localStorage.getItem('token') || null);
+    console.log(token);
+    
 
     const isAuthenticated = () => {
         return !!token.value;
@@ -16,10 +18,16 @@ export const useAuthStore = defineStore('auth', () => {
     };
  
     const logout = async () => {
-        const response = await axios.post('http://localhost:8000/api/auth/logout');
-        token.value = null;
-        localStorage.removeItem('token');
-        router.push({ name: 'home' });
+        try {
+            const response = await axios.post('http://localhost:8000/api/auth/logout');
+            token.value = null;
+            localStorage.removeItem('token');
+            router.push({ name: 'home' });
+        } catch (error) {
+            token.value = null;
+            localStorage.removeItem('token');
+            router.push({ name: 'login' });
+        }
     };
 
     return {

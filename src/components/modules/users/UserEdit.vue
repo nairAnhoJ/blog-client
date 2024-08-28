@@ -1,5 +1,5 @@
 <template>
-    <button @click="showEditModal(editID)" class="group relative inline-block flex hover:underline p-3 bg-gray-500 text-gray-800 rounded-xl hover:bg-gray-400 duration-300 z-10">
+    <button @click="showEditModal(editID)" class="group relative inline-block flex hover:underline p-3 bg-blue-500 text-white rounded-xl hover:bg-blue-400 duration-300 z-10">
         <IconPencil class="w-5 h-5"></IconPencil>
         <span class="absolute hidden group-hover:flex right-1/2 -bottom-[2px] translate-y-full translate-x-1/2 px-2 py-1 bg-gray-700 rounded-lg text-center text-white text-sm after:content-[''] after:absolute after:left-1/2 after:bottom-[100%] after:-translate-x-1/2 after:border-8 after:border-x-transparent after:border-t-transparent after:border-b-gray-700 z-20">Edit</span>
     </button>
@@ -67,7 +67,7 @@
             const response = await editUser(id);
             user.value = response.data.data
         }catch (error) {
-            // error = 'An unexpected error occurred.';
+            errors.value = 'An unexpected error occurred. Please try again later.';
         }finally{
             isEditModalVisible.value = true;
             loadingElement.classList.add('hidden');
@@ -85,7 +85,7 @@
                 if (error.response.status === 422) {
                     errors.value = error.response.data.errors || {};
                 } else {
-                    errors.value = 'Invalid login credentials.';
+                    errors.value = 'An unexpected error occurred. Please try again later.';
                 }
             } else {
                 errors.value = 'An unexpected error occurred. Please try again later.';
@@ -94,12 +94,5 @@
             loadingElement.classList.add('hidden');
         }
     }
-
-    // return {
-    //     user,
-    //     isEditModalVisible,
-    //     store,
-    //     errors
-    // };
 </script>
 
