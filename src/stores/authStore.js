@@ -5,8 +5,6 @@ import router from "@/Router";
 
 export const useAuthStore = defineStore('auth', () => {
     const token = ref(localStorage.getItem('token') || null);
-    console.log(token);
-    
 
     const isAuthenticated = () => {
         return !!token.value;

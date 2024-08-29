@@ -1,6 +1,8 @@
 <template>
     <div class="overflow-x-hidden">
         <div class="text-white p-6 min-h-[calc(100vh-64px)]">
+            <AlertMessage :isAlertVisible="isAlertVisible" :alertDetails="alertDetails" @close="isAlertVisible = !isAlertVisible"
+            ></AlertMessage>
             <div class="w-full flex items-center justify-between">
                 <UserAdd @add-row="addRow"></UserAdd>
             </div>
@@ -15,7 +17,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <UserTable v-for="user in collection" :key="user.id" :user="user" @update-row="updateRow" @delete-row="deleteRow"></UserTable>
+                        <UserTable v-for="user in collection" :key="user.id" :user="user" @update-row="updateRow" @delete-row="deleteRow" @show-alert="showAlert"></UserTable>
                     </tbody>
                 </table>
                 <Loading v-if="!isLoaded"></Loading>
@@ -39,7 +41,7 @@
         import PaginationComponent from '@/components/PaginationComponent.vue';
         import axios from '@/axios';
         import { useAuthStore } from '@/stores/authStore';
-
+        import AlertMessage from '@/components/AlertMessage.vue';
     // Imports
 
     // Variables
@@ -48,6 +50,12 @@
         const pagination = ref({ links: {}, meta: {} });
         const errors = ref({});
         const authStore = useAuthStore();
+        const isAlertVisible = ref(false);
+
+        const alertDetails = ref({
+            type: '',
+            message: ''
+        });
     // Variables
 
     onMounted(async () => {
@@ -98,5 +106,10 @@
         if (index !== -1) {
             collection.value.splice(index, 1);
         }
+    }
+
+    function showAlert(details){
+        alertDetails.value = details;
+        isAlertVisible.value = true;
     }
 </script>
