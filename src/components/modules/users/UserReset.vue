@@ -45,7 +45,7 @@
     
     const alert = ref({
         type: '',
-        message: 'test only'
+        message: ''
     });
 
     const props = defineProps({

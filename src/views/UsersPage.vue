@@ -1,10 +1,9 @@
 <template>
     <div class="overflow-x-hidden">
         <div class="text-white p-6 min-h-[calc(100vh-64px)]">
-            <AlertMessage :isAlertVisible="isAlertVisible" :alertDetails="alertDetails" @close="isAlertVisible = !isAlertVisible"
-            ></AlertMessage>
+            <AlertMessage :isAlertVisible="isAlertVisible" :alertDetails="alertDetails" @close="isAlertVisible = !isAlertVisible"></AlertMessage>
             <div class="w-full flex items-center justify-between">
-                <UserAdd @add-row="addRow"></UserAdd>
+                <UserAdd @add-row="addRow" @show-alert="showAlert"></UserAdd>
             </div>
             <div class="mt-6 w-full">
                 <table class="w-full">

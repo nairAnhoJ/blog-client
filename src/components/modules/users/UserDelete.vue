@@ -42,6 +42,11 @@
         name: '',
         email: ''
     });
+    
+    const alert = ref({
+        type: '',
+        message: ''
+    });
 
     const props = defineProps({
         deleteID: {
@@ -53,7 +58,7 @@
     const isDeleteModalVisible = ref(false);
     const errors = ref({});
     const loadingElement = document.getElementById('loading');
-    const emit = defineEmits(['delete-row']);
+    const emit = defineEmits(['delete-row', 'show-alert']);
 
     async function showDeleteModal(id) {
         try {
@@ -73,8 +78,11 @@
         try {
             loadingElement.classList.remove('hidden');
             const response = await deleteUser(props.deleteID);
-            isDeleteModalVisible.value = false;
             emit('delete-row', props.deleteID);
+            alert.value.type = 'success';
+            alert.value.message = 'User deleted successfully.';
+            emit('show-alert', alert.value);
+            isDeleteModalVisible.value = false;
         } catch (error) {
             errors.value = 'An unexpected error occurred. Please try again later.';
         }finally{

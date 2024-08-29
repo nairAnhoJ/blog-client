@@ -1,5 +1,5 @@
 <template>
-    <button @click="isAddModalVisible = !isAddModalVisible" class="text-xl font-bold bg-blue-600 px-3 py-2 rounded-lg hover:bg-blue-700">
+    <button @click="showAddModal" class="text-xl font-bold bg-blue-600 px-3 py-2 rounded-lg hover:bg-blue-700">
         ADD USER
     </button>
 
@@ -44,20 +44,34 @@
     const isAddModalVisible = ref(false);
     const errors = ref({});
     const loadingElement = document.getElementById('loading');
-    const emit = defineEmits(['add-row']);
+    const emit = defineEmits(['add-row', 'show-alert']);
 
     const user = ref({
         name: '',
         email: '',
         password: 'password'
     });
+    
+    const alert = ref({
+        type: '',
+        message: ''
+    });
+
+    function showAddModal(){
+        user.value.name = '';
+        user.value.email = '';
+        isAddModalVisible.value = true;
+    }
 
     async function store() {
         try {
             loadingElement.classList.remove('hidden');
             const response = await createUser(user.value);
-            isAddModalVisible.value = false;
             emit('add-row', response.data.data);
+            alert.value.type = 'success';
+            alert.value.message = 'User created successfully.';
+            emit('show-alert', alert.value);
+            isAddModalVisible.value = false;
         } catch (error) {
             if (error.response) {
                 if (error.response.status === 422) {

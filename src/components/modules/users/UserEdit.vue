@@ -47,6 +47,11 @@
         name: '',
         email: ''
     });
+    
+    const alert = ref({
+        type: '',
+        message: ''
+    });
 
     const props = defineProps({
         editID: {
@@ -58,7 +63,7 @@
     const isEditModalVisible = ref(false);
     const errors = ref({});
     const loadingElement = document.getElementById('loading');
-    const emit = defineEmits(['update-row']);
+    const emit = defineEmits(['update-row', 'show-alert']);
 
     async function showEditModal(id) {
         try {
@@ -78,8 +83,11 @@
         try {
             loadingElement.classList.remove('hidden');
             const response = await updateUser(props.editID, user.value);
-            isEditModalVisible.value = false;
             emit('update-row', response.data.data);
+            alert.value.type = 'success';
+            alert.value.message = 'User updated successfully.';
+            emit('show-alert', alert.value);
+            isEditModalVisible.value = false;
         } catch (error) {
             if (error.response) {
                 if (error.response.status === 422) {

@@ -10,10 +10,10 @@
             {{ user.email }}
         </td>
         <td class="px-6 py-4 text-center flex items-center gap-x-4 justify-center">
-            <UserEdit :editID='user.id' @update-row="handleUpdate"></UserEdit>
+            <UserEdit :editID='user.id' @update-row="handleUpdate" @show-alert="handleAlert"></UserEdit>
             <!-- <span class="px-4">│</span> -->
             <UserReset :resetID='user.id' @show-alert="handleAlert"></UserReset>
-            <UserDelete :deleteID='user.id' @delete-row="handleDelete"></UserDelete>
+            <UserDelete :deleteID='user.id' @delete-row="handleDelete" @show-alert="handleAlert"></UserDelete>
         </td>
     </tr>
 </template>
